@@ -1,5 +1,5 @@
 package cashregister.domain;
 
 public enum Constraint {
-    REQUIRED, UNIQUE
+    REQUIRED, POSITIVE, UNIQUE
 }

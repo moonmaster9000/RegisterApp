@@ -27,6 +27,31 @@ public class CreateItemTest {
         );
     }
 
+    @Test
+    public void negativePrice() {
+        int negativePriceInCents = -1;
+
+        CreateItem.createItem(validDisplayName, validBarcode, negativePriceInCents, observer);
+
+        assertThat(
+            observer.spyValidationErrors(),
+            hasItem(new ValidationError("priceInCents", POSITIVE))
+        );
+    }
+
+    @Test
+    public void emptyBarcode() {
+        String emptyBarcode = null;
+
+        CreateItem.createItem(validDisplayName, emptyBarcode, validPriceInCents, observer);
+
+        assertThat(
+            observer.spyValidationErrors(),
+            hasItem(new ValidationError("barcode", REQUIRED))
+        );
+    }
+
+    private String validDisplayName = "valid display name";
     private String validBarcode = "valid barcode";
     private int validPriceInCents = 1;
 }
