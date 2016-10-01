@@ -5,6 +5,7 @@ import cashregister.domain.usecases.CreateItemObserver;
 import cashregister.domain.values.ValidationError;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static cashregister.domain.Constraint.*;
@@ -31,8 +32,14 @@ public class CreateItemTest {
 }
 
 class CreateItemObserverSpy implements CreateItemObserver {
+    private ArrayList<ValidationError> spyValidationErrors;
 
     public List<ValidationError> spyValidationErrors() {
-        return null;
+        return spyValidationErrors;
+    }
+
+    @Override
+    public void validationFailed(ArrayList<ValidationError> errors) {
+        spyValidationErrors = errors;
     }
 }
