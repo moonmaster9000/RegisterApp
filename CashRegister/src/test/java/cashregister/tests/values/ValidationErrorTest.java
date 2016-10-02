@@ -1,10 +1,10 @@
-package cashregister.domain.values;
+package cashregister.tests.values;
 
 import cashregister.domain.Constraint;
+import cashregister.domain.values.ValidationError;
 import org.junit.Test;
 
-import static cashregister.domain.Constraint.REQUIRED;
-import static cashregister.domain.Constraint.UNIQUE;
+import static cashregister.domain.Constraint.*;
 import static org.junit.Assert.*;
 
 public class ValidationErrorTest {

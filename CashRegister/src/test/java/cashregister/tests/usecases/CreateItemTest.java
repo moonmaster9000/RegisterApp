@@ -1,25 +1,25 @@
 package cashregister.tests.usecases;
 
-import cashregister.domain.usecases.CreateItem;
-import cashregister.domain.usecases.CreateItemObserver;
+import cashregister.domain.repositories.interfaces.ItemRepository;
 import cashregister.domain.values.ValidationError;
+import cashregister.tests.doubles.CreateItemObserverSpy;
+import cashregister.tests.doubles.FakeItemRepository;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static cashregister.domain.Constraint.*;
+import static cashregister.domain.usecases.CreateItem.*;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 public class CreateItemTest {
     private CreateItemObserverSpy observer = new CreateItemObserverSpy();
+    private ItemRepository itemRepo = new FakeItemRepository();
 
     @Test
     public void noDisplayName() {
         String emptyDisplayName = null;
 
-        CreateItem.createItem(emptyDisplayName, validBarcode, validPriceInCents, observer);
+        createItem(emptyDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -31,7 +31,7 @@ public class CreateItemTest {
     public void negativePrice() {
         int negativePriceInCents = -1;
 
-        CreateItem.createItem(validDisplayName, validBarcode, negativePriceInCents, observer);
+        createItem(validDisplayName, validBarcode, negativePriceInCents, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -43,7 +43,7 @@ public class CreateItemTest {
     public void emptyBarcode() {
         String emptyBarcode = null;
 
-        CreateItem.createItem(validDisplayName, emptyBarcode, validPriceInCents, observer);
+        createItem(validDisplayName, emptyBarcode, validPriceInCents, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -51,20 +51,29 @@ public class CreateItemTest {
         );
     }
 
+    @Test
+    public void validAttributes_noValidationErrors() {
+        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+
+        assertNull(observer.spyValidationErrors());
+    }
+
+    @Test
+    public void validAttributes_ItemIsCreated() {
+        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+
+        assertEquals(1, itemRepo.count());
+    }
+
+    @Test
+    public void validAttributes_SendsIdOfCreatedItemToObserver() {
+        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+
+        assertNotNull(observer.spyCreatedItemId());
+    }
+
     private String validDisplayName = "valid display name";
     private String validBarcode = "valid barcode";
     private int validPriceInCents = 1;
 }
 
-class CreateItemObserverSpy implements CreateItemObserver {
-    private ArrayList<ValidationError> spyValidationErrors;
-
-    public List<ValidationError> spyValidationErrors() {
-        return spyValidationErrors;
-    }
-
-    @Override
-    public void validationFailed(ArrayList<ValidationError> errors) {
-        spyValidationErrors = errors;
-    }
-}
