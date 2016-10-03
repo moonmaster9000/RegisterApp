@@ -1,18 +1,19 @@
 package cashregister.domain.entities;
 
-import cashregister.domain.values.ValidationError;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static cashregister.domain.Constraint.POSITIVE;
 import static cashregister.domain.Constraint.REQUIRED;
 
-public class Item {
+
+public class Item extends Entity {
     private String displayName;
     private String barcode;
     private int priceInCents;
-    private Object id;
+
+    static {
+        validations.put("displayName", REQUIRED);
+        validations.put("barcode", REQUIRED);
+        validations.put("priceInCents", POSITIVE);
+    }
 
     public Item(String displayName, String barcode, int priceInCents) {
         this.displayName = displayName;
@@ -22,30 +23,15 @@ public class Item {
 
     public Item() { }
 
-    public Object getId() {
-        return id;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setId(Object id) {
-        this.id = id;
+    public String getBarcode() {
+        return barcode;
     }
 
-    public boolean isValid() {
-        return getValidationErrors().isEmpty();
-    }
-
-    public List<ValidationError> getValidationErrors() {
-        ArrayList<ValidationError> errors = new ArrayList<>();
-
-        if (displayName == null)
-            errors.add(new ValidationError("displayName", REQUIRED));
-
-        if (barcode == null)
-            errors.add(new ValidationError("barcode", REQUIRED));
-
-        if (priceInCents <= 0)
-            errors.add(new ValidationError("priceInCents", POSITIVE));
-
-        return errors;
+    public int getPriceInCents() {
+        return priceInCents;
     }
 }
