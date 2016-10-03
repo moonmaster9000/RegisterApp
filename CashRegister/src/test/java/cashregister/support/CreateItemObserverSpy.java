@@ -1,4 +1,4 @@
-package cashregister.tests.doubles;
+package cashregister.support;
 
 import cashregister.domain.usecases.CreateItemObserver;
 import cashregister.domain.values.ValidationError;

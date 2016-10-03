@@ -1,14 +1,22 @@
-package cashregister.domain.repositories.contracts;
+package cashregister.tests.repositories.contracts;
 
 import cashregister.domain.entities.Item;
-import cashregister.tests.doubles.FakeItemRepository;
+import cashregister.domain.repositories.interfaces.ItemRepository;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
-public class ItemRepositoryContract {
-    private FakeItemRepository repo = new FakeItemRepository();
+public abstract class ItemRepositoryContract {
+    protected ItemRepository repo;
+
+    protected abstract void createRepo();
+
+    @Before
+    public void before() {
+        createRepo();
+    }
 
     @Test
     public void itCreatesUniqueIds() {

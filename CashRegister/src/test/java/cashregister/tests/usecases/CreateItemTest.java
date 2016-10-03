@@ -2,8 +2,8 @@ package cashregister.tests.usecases;
 
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import cashregister.domain.values.ValidationError;
-import cashregister.tests.doubles.CreateItemObserverSpy;
-import cashregister.tests.doubles.FakeItemRepository;
+import cashregister.support.CreateItemObserverSpy;
+import cashregister.support.FakeItemRepository;
 import org.junit.Test;
 
 import static cashregister.domain.Constraint.*;

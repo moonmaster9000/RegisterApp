@@ -3,7 +3,7 @@ package cashregister.stepdefs;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import cashregister.domain.usecases.CreateItem;
 import cashregister.domain.usecases.CreateItemObserver;
-import cashregister.tests.doubles.FakeItemRepository;
+import cashregister.support.FakeItemRepository;
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;

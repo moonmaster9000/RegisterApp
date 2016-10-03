@@ -1,4 +1,4 @@
-package cashregister.tests.doubles;
+package cashregister.support;
 
 import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
