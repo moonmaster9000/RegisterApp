@@ -1,19 +1,20 @@
 package cashregister.domain.entities;
 
 import cashregister.domain.Constraint;
-import cashregister.domain.entities.validations.ValidatePropertyWithConstraint;
-import cashregister.domain.entities.validations.runtimeExceptions.*;
 import cashregister.domain.values.ValidationError;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static cashregister.domain.Constraint.*;
 
 public abstract class Entity {
     protected Object id;
-    protected static final Map<String, Constraint> validations = new HashMap<>();
 
     public Object getId() {
         return id;
@@ -28,34 +29,28 @@ public abstract class Entity {
     }
 
     public List<ValidationError> getValidationErrors() {
-        ArrayList<ValidationError> errors = new ArrayList<>();
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        validations.forEach((property, constraint) -> {
-            getConstraintValidator(errors, property, constraint).validate();
-        });
+        validator.validate(this).stream().map(error -> new ValidationError(error.getPropertyPath().toString(), REQUIRED));
 
-        return errors;
-    }
+        Set<ConstraintViolation<Entity>> errors = validator.validate(this);
 
-    private ValidatePropertyWithConstraint getConstraintValidator(ArrayList<ValidationError> errors, String property, Constraint constraint){
-        String constraintValidatorClassName = "cashregister.domain.entities.validations.Validate" + constraint.toCapitalizedString();
+        return errors.stream().map((ConstraintViolation error) ->  {
+            String property = error.getPropertyPath().toString();
+            String[] constraintNameParts = error.getConstraintDescriptor().getAnnotation().annotationType().getTypeName().split("\\.");
+            String constraintAnnotation = constraintNameParts[constraintNameParts.length - 1];
+            Constraint constraint = null;
 
-        try {
-            return (ValidatePropertyWithConstraint) Class.
-                forName(constraintValidatorClassName).
-                getConstructor(List.class, String.class, Constraint.class, Entity.class).
-                newInstance(errors, property, constraint, this);
+            switch (constraintAnnotation) {
+                case "NotBlank":
+                    constraint = REQUIRED;
+                    break;
+                case "Min":
+                    constraint = POSITIVE;
+                    break;
+            }
 
-        } catch (InstantiationException e) {
-            throw new CantInstantiateValidateClass(constraintValidatorClassName, e);
-        } catch (IllegalAccessException e) {
-            throw new CantAccessValidateClass(constraintValidatorClassName, e);
-        } catch (ClassNotFoundException e) {
-            throw new CantFindValidateClass(constraintValidatorClassName, e);
-        } catch (NoSuchMethodException e) {
-            throw new CantCallMethodOnValidateClass(constraintValidatorClassName, e);
-        } catch (InvocationTargetException e) {
-            throw new ValidateClassThrewException(constraintValidatorClassName, e);
-        }
+            return new ValidationError(property, constraint);
+        }).collect(Collectors.toList());
     }
 }
