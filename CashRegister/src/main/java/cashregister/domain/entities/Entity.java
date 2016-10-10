@@ -1,19 +1,27 @@
 package cashregister.domain.entities;
 
 import cashregister.domain.Constraint;
-import cashregister.domain.entities.validations.ValidatePropertyWithConstraint;
-import cashregister.domain.entities.validations.runtimeExceptions.*;
 import cashregister.domain.values.ValidationError;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static cashregister.domain.Constraint.*;
+import static javax.validation.Validation.*;
 
 public abstract class Entity {
-    protected String id;
-    protected static final Map<String, Constraint> validations = new HashMap<>();
+    private static Map<String,Constraint> annotationToConstraint = new HashMap<>();
+
+    static {
+        annotationToConstraint.put("NotNull", REQUIRED);
+        annotationToConstraint.put("Min", POSITIVE);
+    }
+
+    private String id;
+
+    private Validator validator = buildDefaultValidatorFactory().getValidator();
 
     public String getId() {
         return id;
@@ -28,34 +36,23 @@ public abstract class Entity {
     }
 
     public List<ValidationError> getValidationErrors() {
-        ArrayList<ValidationError> errors = new ArrayList<>();
+        Set<ConstraintViolation<Entity>> errors = validator.validate(this);
 
-        validations.forEach((property, constraint) -> {
-            getConstraintValidator(errors, property, constraint).validate();
-        });
-
-        return errors;
+        return errors
+            .stream()
+            .map(this::convertConstraintViolationToValidationError)
+            .collect(Collectors.toList());
     }
 
-    private ValidatePropertyWithConstraint getConstraintValidator(ArrayList<ValidationError> errors, String property, Constraint constraint){
-        String constraintValidatorClassName = "cashregister.domain.entities.validations.Validate" + constraint.toCapitalizedString();
+    private ValidationError convertConstraintViolationToValidationError(ConstraintViolation error) {
+        String property = error.getPropertyPath().toString();
+        Constraint constraint = annotationToConstraint.get(getConstraintAnnotationName(error));
 
-        try {
-            return (ValidatePropertyWithConstraint) Class.
-                forName(constraintValidatorClassName).
-                getConstructor(List.class, String.class, Constraint.class, Entity.class).
-                newInstance(errors, property, constraint, this);
+        return new ValidationError(property, constraint);
+    }
 
-        } catch (InstantiationException e) {
-            throw new CantInstantiateValidateClass(constraintValidatorClassName, e);
-        } catch (IllegalAccessException e) {
-            throw new CantAccessValidateClass(constraintValidatorClassName, e);
-        } catch (ClassNotFoundException e) {
-            throw new CantFindValidateClass(constraintValidatorClassName, e);
-        } catch (NoSuchMethodException e) {
-            throw new CantCallMethodOnValidateClass(constraintValidatorClassName, e);
-        } catch (InvocationTargetException e) {
-            throw new ValidateClassThrewException(constraintValidatorClassName, e);
-        }
+    private String getConstraintAnnotationName(ConstraintViolation error) {
+        String[] constraintNameParts = error.getConstraintDescriptor().getAnnotation().annotationType().getTypeName().split("\\.");
+        return constraintNameParts[constraintNameParts.length - 1];
     }
 }

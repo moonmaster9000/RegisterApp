@@ -1,19 +1,13 @@
 package cashregister.domain.entities;
 
-import static cashregister.domain.Constraint.POSITIVE;
-import static cashregister.domain.Constraint.REQUIRED;
-
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class Item extends Entity {
-    private String displayName;
-    private String barcode;
-    private int priceInCents;
 
-    static {
-        validations.put("displayName", REQUIRED);
-        validations.put("barcode", REQUIRED);
-        validations.put("priceInCents", POSITIVE);
-    }
+    @NotNull private String displayName;
+    @NotNull private String barcode;
+    @Min(1)  private int priceInCents;
 
     public Item(String displayName, String barcode, int priceInCents) {
         this.displayName = displayName;

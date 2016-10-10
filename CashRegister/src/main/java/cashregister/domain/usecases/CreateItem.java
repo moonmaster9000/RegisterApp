@@ -20,6 +20,5 @@ public class CreateItem {
             itemRepo.save(item);
             observer.itemCreated(item.getId());
         }
-
     }
 }
