@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="cashregister.domain.entities">
+    <class name="Item">
+        <id name="id">
+            <generator class="org.hibernate.id.UUIDGenerator"/>
+        </id>
+
+        <property name="displayName"/>
+        <property name="barcode"/>
+        <property name="priceInCents"/>
+    </class>
+</hibernate-mapping>
