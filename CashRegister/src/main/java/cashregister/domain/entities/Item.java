@@ -1,13 +1,15 @@
 package cashregister.domain.entities;
 
+import cashregister.domain.entities.constraints.NotBlank;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class Item extends Entity {
 
-    @NotNull private String displayName;
-    @NotNull private String barcode;
-    @Min(1)  private int priceInCents;
+    @NotBlank private String displayName;
+    @NotNull  private String barcode;
+    @Min(1)   private int priceInCents;
 
     public Item(String displayName, String barcode, int priceInCents) {
         this.displayName = displayName;

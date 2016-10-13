@@ -16,6 +16,7 @@ public abstract class Entity {
 
     static {
         annotationToConstraint.put("NotNull", REQUIRED);
+        annotationToConstraint.put("NotBlank", REQUIRED);
         annotationToConstraint.put("Min", POSITIVE);
     }
 

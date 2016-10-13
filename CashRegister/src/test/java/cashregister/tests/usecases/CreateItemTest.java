@@ -12,12 +12,33 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 public class CreateItemTest {
-    private CreateItemObserverSpy observer = new CreateItemObserverSpy();
-    private ItemRepository itemRepo = new FakeItemRepository();
+    @Test
+    public void nullDisplayName() {
+        String nullDisplayName = null;
+
+        createItem(nullDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+
+        assertThat(
+            observer.spyValidationErrors(),
+            hasItem(new ValidationError("displayName", REQUIRED))
+        );
+    }
 
     @Test
-    public void noDisplayName() {
-        String emptyDisplayName = null;
+    public void emptyDisplayName() {
+        String emptyDisplayName = "";
+
+        createItem(emptyDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+
+        assertThat(
+            observer.spyValidationErrors(),
+            hasItem(new ValidationError("displayName", REQUIRED))
+        );
+    }
+
+    @Test
+    public void blankDisplayName() {
+        String emptyDisplayName = "   ";
 
         createItem(emptyDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
 
@@ -75,5 +96,7 @@ public class CreateItemTest {
     private String validDisplayName = "valid display name";
     private String validBarcode = "valid barcode";
     private int validPriceInCents = 1;
+    private CreateItemObserverSpy observer = new CreateItemObserverSpy();
+    private ItemRepository itemRepo = new FakeItemRepository();
 }
 
