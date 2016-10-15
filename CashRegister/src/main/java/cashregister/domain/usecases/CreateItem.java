@@ -10,9 +10,7 @@ import static cashregister.domain.Constraint.POSITIVE;
 import static cashregister.domain.Constraint.REQUIRED;
 
 public class CreateItem {
-    public static void createItem(String displayName, String barcode, int priceInCents, CreateItemObserver observer, ItemRepository itemRepo) {
-        Item item = new Item(displayName, barcode, priceInCents);
-
+    public static void createItem(Item item, CreateItemObserver observer, ItemRepository itemRepo) {
         if (!item.isValid())
             observer.validationFailed(item.getValidationErrors());
 

@@ -1,7 +1,6 @@
 package cashregister.stepdefs;
 
 import cashregister.domain.repositories.interfaces.ItemRepository;
-import cashregister.domain.usecases.CreateItem;
 import cashregister.domain.usecases.CreateItemObserver;
 import cashregister.support.FakeItemRepository;
 import cucumber.api.PendingException;
@@ -15,7 +14,7 @@ public class PurchaseSingleItem {
 
     @Given("^an admin has added \"([^\"]*)\" brand milk to the cash register system, including display name, barcode, and price in cents$")
     public void anAdminHasAddedBrandMilkToTheCashRegisterSystemIncludingDisplayNameBarcodeAndPriceInCents(String displayName) throws Throwable {
-        CreateItem.createItem(displayName, "barcode", 1, observer, itemRepo);
+//        CreateItem.createItem(displayName, "barcode", 1, observer, itemRepo);
     }
 
     @When("^a cashier scans in the barcode of \"([^\"]*)\"$")

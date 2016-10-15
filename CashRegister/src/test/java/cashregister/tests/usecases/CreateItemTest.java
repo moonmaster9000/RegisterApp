@@ -1,22 +1,25 @@
 package cashregister.tests.usecases;
 
+import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import cashregister.domain.values.ValidationError;
 import cashregister.support.CreateItemObserverSpy;
 import cashregister.support.FakeItemRepository;
+import org.junit.Before;
 import org.junit.Test;
 
-import static cashregister.domain.Constraint.*;
-import static cashregister.domain.usecases.CreateItem.*;
+import static cashregister.domain.Constraint.POSITIVE;
+import static cashregister.domain.Constraint.REQUIRED;
+import static cashregister.domain.usecases.CreateItem.createItem;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 public class CreateItemTest {
     @Test
     public void nullDisplayName() {
-        String nullDisplayName = null;
+        item.setDisplayName(null);
 
-        createItem(nullDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -26,9 +29,9 @@ public class CreateItemTest {
 
     @Test
     public void emptyDisplayName() {
-        String emptyDisplayName = "";
+        item.setDisplayName("");
 
-        createItem(emptyDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -38,9 +41,9 @@ public class CreateItemTest {
 
     @Test
     public void blankDisplayName() {
-        String emptyDisplayName = "   ";
+        item.setDisplayName("    ");
 
-        createItem(emptyDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -50,9 +53,9 @@ public class CreateItemTest {
 
     @Test
     public void negativePrice() {
-        int negativePriceInCents = -1;
+        item.setPriceInCents(-1);
 
-        createItem(validDisplayName, validBarcode, negativePriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -62,9 +65,9 @@ public class CreateItemTest {
 
     @Test
     public void emptyBarcode() {
-        String emptyBarcode = null;
+        item.setBarcode(null);
 
-        createItem(validDisplayName, emptyBarcode, validPriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -74,21 +77,21 @@ public class CreateItemTest {
 
     @Test
     public void validAttributes_noValidationErrors() {
-        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertNull(observer.spyValidationErrors());
     }
 
     @Test
     public void validAttributes_ItemIsCreated() {
-        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertEquals(1, itemRepo.count());
     }
 
     @Test
     public void validAttributes_SendsIdOfCreatedItemToObserver() {
-        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(item, observer, itemRepo);
 
         assertNotNull(observer.spyCreatedItemId());
     }
@@ -98,5 +101,13 @@ public class CreateItemTest {
     private int validPriceInCents = 1;
     private CreateItemObserverSpy observer = new CreateItemObserverSpy();
     private ItemRepository itemRepo = new FakeItemRepository();
+    private Item item = new Item();
+
+    @Before
+    public void before() {
+        item.setDisplayName(validDisplayName);
+        item.setBarcode(validBarcode);
+        item.setPriceInCents(validPriceInCents);
+    }
 }
 
