@@ -1,10 +1,11 @@
 package cashregister.tests.repositories.contracts;
 
-import cashregister.domain.entities.Item;
+import cashregister.domain.entities.PersistenceControlledItemAttributes;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import org.junit.Before;
 import org.junit.Test;
 
+import static cashregister.domain.entities.EntityFactory.createPersistenceControlledItemAttributes;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
@@ -20,8 +21,8 @@ public abstract class ItemRepositoryContract {
 
     @Test
     public void itCreatesUniqueIds() {
-        Item item1 = new Item();
-        Item item2 = new Item();
+        PersistenceControlledItemAttributes item1 = createPersistenceControlledItemAttributes();
+        PersistenceControlledItemAttributes item2 = createPersistenceControlledItemAttributes();
 
         assertNull(item1.getId());
         assertNull(item2.getId());
@@ -36,14 +37,16 @@ public abstract class ItemRepositoryContract {
 
     @Test
     public void itSavesTheItemForLaterRetrieval() {
-        Item item = new Item();
+        PersistenceControlledItemAttributes item = createPersistenceControlledItemAttributes();
+
         repo.save(item);
         assertThat(repo.getAll(), hasItem(item));
     }
 
     @Test
     public void itCounts() {
-        Item item = new Item();
+        PersistenceControlledItemAttributes item = createPersistenceControlledItemAttributes();
+
         repo.save(item);
         assertEquals(1, repo.count());
     }

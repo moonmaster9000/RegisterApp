@@ -1,6 +1,6 @@
 package hibernateBackedRepos.repositories;
 
-import cashregister.domain.entities.Item;
+import cashregister.domain.entities.PersistenceControlledItemAttributes;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import org.hibernate.Session;
 
@@ -14,16 +14,16 @@ public class HibernateItemRepo implements ItemRepository {
     }
 
     public int count() {
-        return ((Long)session.createQuery("select count(*) from Item").uniqueResult()).intValue();
+        return ((Long)session.createQuery("select count(*) from PersistenceControlledItemAttributes").uniqueResult()).intValue();
     }
 
-    public void save(Item item) {
+    public void save(PersistenceControlledItemAttributes item) {
         session.beginTransaction();
         session.save(item);
         session.getTransaction().commit();
     }
 
-    public List<Item> getAll() {
-        return (List<Item>)session.createQuery("from Item").list();
+    public List<PersistenceControlledItemAttributes> getAll() {
+        return (List<PersistenceControlledItemAttributes>)session.createQuery("from Item").list();
     }
 }

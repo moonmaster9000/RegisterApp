@@ -1,6 +1,6 @@
 package cashregister.support;
 
-import cashregister.domain.entities.Item;
+import cashregister.domain.entities.PersistenceControlledItemAttributes;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class FakeItemRepository implements ItemRepository {
-    private List<Item> items;
+    private List<PersistenceControlledItemAttributes> items;
 
     public FakeItemRepository(){
         items = new ArrayList<>();
@@ -20,13 +20,13 @@ public class FakeItemRepository implements ItemRepository {
     }
 
     @Override
-    public void save(Item item) {
+    public void save(PersistenceControlledItemAttributes item) {
         item.setId(UUID.randomUUID().toString());
         items.add(item);
     }
 
     @Override
-    public List<Item> getAll() {
+    public List<PersistenceControlledItemAttributes> getAll() {
         return items;
     }
 

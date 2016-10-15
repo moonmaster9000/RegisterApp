@@ -20,17 +20,7 @@ public abstract class Entity {
         annotationToConstraint.put("Min", POSITIVE);
     }
 
-    private String id;
-
     private Validator validator = buildDefaultValidatorFactory().getValidator();
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public boolean isValid() {
         return getValidationErrors().isEmpty();

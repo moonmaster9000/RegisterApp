@@ -26,7 +26,7 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">create</property>
 
-        <mapping resource="mappings/Item.hbm.xml"/>
+        <mapping resource="mappings/PersistenceControlledItemAttributes.hbm.xml"/>
 
     </session-factory>
 

@@ -1,13 +1,13 @@
 package cashregister.domain.repositories.interfaces;
 
-import cashregister.domain.entities.Item;
+import cashregister.domain.entities.PersistenceControlledItemAttributes;
 
 import java.util.List;
 
 public interface ItemRepository {
     int count();
 
-    void save(Item item);
+    void save(PersistenceControlledItemAttributes item);
 
-    List<Item> getAll();
+    List<PersistenceControlledItemAttributes> getAll();
 }

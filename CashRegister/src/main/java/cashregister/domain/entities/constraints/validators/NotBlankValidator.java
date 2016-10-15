@@ -13,7 +13,7 @@ public class NotBlankValidator implements ConstraintValidator<NotBlank, String> 
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (s == null || s.equals("") || s.trim().isEmpty()) {
+        if (s == null || s.trim().isEmpty()) {
             return false;
         }
 

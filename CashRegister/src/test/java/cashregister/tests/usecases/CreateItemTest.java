@@ -1,22 +1,25 @@
 package cashregister.tests.usecases;
 
+import cashregister.domain.entities.EntityFactory;
+import cashregister.domain.entities.UserControlledItemAttributes;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import cashregister.domain.values.ValidationError;
 import cashregister.support.CreateItemObserverSpy;
 import cashregister.support.FakeItemRepository;
+import org.junit.Before;
 import org.junit.Test;
 
 import static cashregister.domain.Constraint.*;
-import static cashregister.domain.usecases.CreateItem.*;
+import static cashregister.domain.entities.CreateItem.*;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 public class CreateItemTest {
     @Test
     public void nullDisplayName() {
-        String nullDisplayName = null;
+        attrs.setDisplayName(null);
 
-        createItem(nullDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -26,9 +29,9 @@ public class CreateItemTest {
 
     @Test
     public void emptyDisplayName() {
-        String emptyDisplayName = "";
+        attrs.setDisplayName("");
 
-        createItem(emptyDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -38,9 +41,9 @@ public class CreateItemTest {
 
     @Test
     public void blankDisplayName() {
-        String emptyDisplayName = "   ";
+        attrs.setDisplayName("   ");
 
-        createItem(emptyDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -50,9 +53,9 @@ public class CreateItemTest {
 
     @Test
     public void negativePrice() {
-        int negativePriceInCents = -1;
+        attrs.setPriceInCents(-1);
 
-        createItem(validDisplayName, validBarcode, negativePriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -60,11 +63,12 @@ public class CreateItemTest {
         );
     }
 
+
     @Test
     public void emptyBarcode() {
-        String emptyBarcode = null;
+        attrs.setBarcode(null);
 
-        createItem(validDisplayName, emptyBarcode, validPriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertThat(
             observer.spyValidationErrors(),
@@ -74,21 +78,21 @@ public class CreateItemTest {
 
     @Test
     public void validAttributes_noValidationErrors() {
-        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertNull(observer.spyValidationErrors());
     }
 
     @Test
     public void validAttributes_ItemIsCreated() {
-        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertEquals(1, itemRepo.count());
     }
 
     @Test
     public void validAttributes_SendsIdOfCreatedItemToObserver() {
-        createItem(validDisplayName, validBarcode, validPriceInCents, observer, itemRepo);
+        createItem(attrs, observer, itemRepo);
 
         assertNotNull(observer.spyCreatedItemId());
     }
@@ -98,5 +102,14 @@ public class CreateItemTest {
     private int validPriceInCents = 1;
     private CreateItemObserverSpy observer = new CreateItemObserverSpy();
     private ItemRepository itemRepo = new FakeItemRepository();
+
+    private UserControlledItemAttributes attrs = new EntityFactory().createUserControlledItemAttributes();
+
+    @Before
+    public void before() {
+        attrs.setDisplayName(validDisplayName);
+        attrs.setBarcode(validBarcode);
+        attrs.setPriceInCents(validPriceInCents);
+    }
 }
 

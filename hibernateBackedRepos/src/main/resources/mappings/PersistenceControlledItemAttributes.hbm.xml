@@ -5,7 +5,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="cashregister.domain.entities">
-    <class name="Item">
+    <class name="PersistenceControlledItemAttributes">
         <id name="id">
             <generator class="org.hibernate.id.UUIDGenerator"/>
         </id>
