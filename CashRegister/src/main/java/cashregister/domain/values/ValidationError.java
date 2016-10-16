@@ -11,6 +11,14 @@ public class ValidationError {
         this.constraint = constraint;
     }
 
+    public String getProperty(){
+        return property;
+    }
+
+    public Constraint getConstraint() {
+        return constraint;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!obj.getClass().equals(getClass())){

@@ -1,14 +1,14 @@
 package cashregister.support;
 
+import cashregister.domain.entities.Item;
 import cashregister.domain.usecases.CreateItemObserver;
 import cashregister.domain.values.ValidationError;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CreateItemObserverSpy implements CreateItemObserver {
     private List<ValidationError> spyValidationErrors;
-    private Object spyCreatedItemId;
+    private Item spyCreatedItem;
 
     public List<ValidationError> spyValidationErrors() {
         return spyValidationErrors;
@@ -20,11 +20,11 @@ public class CreateItemObserverSpy implements CreateItemObserver {
     }
 
     @Override
-    public void itemCreated(Object id) {
-        spyCreatedItemId = id;
+    public void itemCreated(Item item) {
+        spyCreatedItem = item;
     }
 
     public Object spyCreatedItemId() {
-        return spyCreatedItemId;
+        return spyCreatedItem.getId();
     }
 }
