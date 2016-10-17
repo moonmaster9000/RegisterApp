@@ -2,6 +2,7 @@ package cashregister.tests.usecases;
 
 import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
+import cashregister.domain.usecases.CreateItem;
 import cashregister.domain.values.ValidationError;
 import cashregister.support.CreateItemObserverSpy;
 import cashregister.support.FakeItemRepository;
@@ -10,7 +11,6 @@ import org.junit.Test;
 
 import static cashregister.domain.Constraint.POSITIVE;
 import static cashregister.domain.Constraint.REQUIRED;
-import static cashregister.domain.usecases.CreateItem.createItem;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
@@ -94,6 +94,10 @@ public class CreateItemTest {
         createItem(item, observer, itemRepo);
 
         assertNotNull(observer.spyCreatedItemId());
+    }
+
+    private void createItem(Item item, CreateItemObserverSpy observer, ItemRepository itemRepo) {
+        new CreateItem(item, observer, itemRepo).execute();
     }
 
     private String validDisplayName = "valid display name";
