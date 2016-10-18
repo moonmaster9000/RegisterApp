@@ -2,49 +2,28 @@ package cashregister.tests.repositories.contracts;
 
 import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-public abstract class ItemRepositoryContract {
-    protected ItemRepository repo;
-
-    protected abstract void createRepo();
-
-    @Before
-    public void before() {
-        createRepo();
-    }
+public abstract class ItemRepositoryContract extends EntityRepositoryContract<Item, ItemRepository> {
 
     @Test
-    public void itCreatesUniqueIds() {
-        Item item1 = new Item();
-        Item item2 = new Item();
+    public void findByBarcode() {
+        Item item1 = createEntity();
+        Item item2 = createEntity();
 
-        assertNull(item1.getId());
-        assertNull(item2.getId());
+        item1.setBarcode("item1 barcode");
+        item2.setBarcode("item2 barcode");
 
         repo.save(item1);
         repo.save(item2);
 
-        assertNotNull(item1.getId());
-        assertNotNull(item2.getId());
-        assertNotEquals(item1.getId(), item2.getId());
+        assertEquals(item1, repo.findByBarcode(item1.getBarcode()));
+        assertEquals(item2, repo.findByBarcode(item2.getBarcode()));
+
+        assertNull(repo.findByBarcode("barcode does not exist"));
     }
 
-    @Test
-    public void itSavesTheItemForLaterRetrieval() {
-        Item item = new Item();
-        repo.save(item);
-        assertThat(repo.getAll(), hasItem(item));
-    }
-
-    @Test
-    public void itCounts() {
-        Item item = new Item();
-        repo.save(item);
-        assertEquals(1, repo.count());
-    }
 }

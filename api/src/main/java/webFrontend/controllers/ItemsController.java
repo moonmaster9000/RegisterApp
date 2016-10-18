@@ -3,7 +3,7 @@ package webFrontend.controllers;
 import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import cashregister.domain.usecases.CreateItem;
-import cashregister.domain.usecases.CreateItemObserver;
+import cashregister.domain.usecases.observers.CreateItemObserver;
 import cashregister.domain.values.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

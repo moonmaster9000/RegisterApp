@@ -4,31 +4,14 @@ import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
-public class FakeItemRepository implements ItemRepository {
-    private List<Item> items;
-
+public class FakeItemRepository extends FakeEntityRepository<Item>  implements ItemRepository {
     public FakeItemRepository(){
-        items = new ArrayList<>();
+        entities = new ArrayList<>();
     }
 
     @Override
-    public int count() {
-        return items.size();
+    public Item findByBarcode(String barcode) {
+        return where(e -> e.getBarcode().equals(barcode));
     }
-
-    @Override
-    public void save(Item item) {
-        item.setId(UUID.randomUUID().toString());
-        items.add(item);
-    }
-
-    @Override
-    public List<Item> getAll() {
-        return items;
-    }
-
-
 }

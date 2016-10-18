@@ -1,7 +1,7 @@
 package cashregister.domain;
 
 public enum Constraint {
-    REQUIRED, POSITIVE, UNIQUE;
+    REQUIRED, POSITIVE, UNIQUE, EXISTS;
 
     public String toCapitalizedString() {
         String constraintName = this.name();

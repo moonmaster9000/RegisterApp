@@ -1,7 +1,7 @@
 package cashregister.support;
 
 import cashregister.domain.entities.Item;
-import cashregister.domain.usecases.CreateItemObserver;
+import cashregister.domain.usecases.observers.CreateItemObserver;
 import cashregister.domain.values.ValidationError;
 
 import java.util.List;
@@ -26,5 +26,9 @@ public class CreateItemObserverSpy implements CreateItemObserver {
 
     public Object spyCreatedItemId() {
         return spyCreatedItem.getId();
+    }
+
+    public Item spyCreatedItem() {
+        return spyCreatedItem;
     }
 }

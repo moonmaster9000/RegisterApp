@@ -2,6 +2,7 @@ package cashregister.domain.usecases;
 
 import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
+import cashregister.domain.usecases.observers.CreateItemObserver;
 
 public class CreateItem {
     private final Item item;
@@ -22,5 +23,9 @@ public class CreateItem {
             itemRepo.save(item);
             observer.itemCreated(item);
         }
+    }
+
+    public static void createItem(Item item, CreateItemObserver createItemObserver, ItemRepository itemRepo) {
+        new CreateItem(item, createItemObserver, itemRepo).execute();
     }
 }
