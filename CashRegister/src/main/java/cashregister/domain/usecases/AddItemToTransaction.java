@@ -41,13 +41,13 @@ public class AddItemToTransaction {
         private final Transaction transaction;
         private final Item item;
 
-        public Execute() {
+        Execute() {
             errors = new ArrayList<>();
             transaction = transactionRepo.findById(transactionId);
             item = itemRepo.findByBarcode(barcode);
         }
 
-        public void invoke() {
+        void invoke() {
             validate();
 
             if (invalid()) {

@@ -34,12 +34,12 @@ public class PresentTransaction {
         private final List<ValidationError> errors;
         private final Transaction transaction;
 
-        public Execute() {
+        Execute() {
             errors = new ArrayList<>();
             transaction = transactionRepo.findById(transactionId);
         }
 
-        public void invoke() {
+        void invoke() {
             if (transactionNotFound()){
                 sendValidationErrorsToObserver();
             } else {
