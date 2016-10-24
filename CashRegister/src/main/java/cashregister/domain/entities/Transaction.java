@@ -14,6 +14,11 @@ public class Transaction extends Entity {
         return items;
     }
 
+    public void setItems(List<Item> items) {
+        System.out.println("items is being set!" + items.toString());
+        this.items = items;
+    }
+
     public void addItem(Item item) {
         items.add(item);
     }

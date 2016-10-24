@@ -14,7 +14,7 @@ public class CreateTransactionController implements CreateTransactionObserver {
     private TransactionRepository repo;
     private Transaction createdTransaction;
 
-    @PostMapping("/items")
+    @PostMapping("/transactions")
     public Transaction create() {
         new CreateTransaction(this, repo).execute();
         return getCreatedTransaction();
