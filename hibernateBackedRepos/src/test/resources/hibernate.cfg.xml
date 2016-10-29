@@ -27,7 +27,7 @@
         <property name="hbm2ddl.auto">create</property>
 
         <mapping resource="mappings/Item.hbm.xml"/>
-
+        <mapping resource="mappings/Transaction.hbm.xml"/>
     </session-factory>
 
 </hibernate-configuration>
