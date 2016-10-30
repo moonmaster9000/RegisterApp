@@ -1,4 +1,4 @@
-package webFrontend.requests;
+package api.requests;
 
 public class AddItemRequest {
     private String barcode;

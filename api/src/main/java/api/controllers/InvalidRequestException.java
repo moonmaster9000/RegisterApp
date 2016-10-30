@@ -1,4 +1,4 @@
-package webFrontend.controllers;
+package api.controllers;
 
 import cashregister.domain.values.ValidationError;
 

@@ -1,4 +1,4 @@
-package webFrontend;
+package api;
 
 import cashregister.domain.repositories.interfaces.ItemRepository;
 import cashregister.domain.repositories.interfaces.TransactionRepository;
