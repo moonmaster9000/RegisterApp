@@ -2,24 +2,21 @@ package cashregister.domain.usecases;
 
 import cashregister.domain.entities.Transaction;
 import cashregister.domain.repositories.interfaces.TransactionRepository;
-import cashregister.domain.usecases.observers.CreateTransactionObserver;
 
 public class CreateTransaction {
-    private final CreateTransactionObserver observer;
     private final TransactionRepository repo;
 
-    public CreateTransaction(CreateTransactionObserver observer, TransactionRepository repo) {
-        this.observer = observer;
+    public CreateTransaction(TransactionRepository repo) {
         this.repo = repo;
     }
 
-    public void execute() {
+    public Transaction execute() {
         Transaction transaction = new Transaction();
         repo.save(transaction);
-        observer.transactionCreated(transaction);
+        return transaction;
     }
 
-    public static void createTransaction(CreateTransactionObserver createTransactionObserver, TransactionRepository transactionRepo) {
-        new CreateTransaction(createTransactionObserver, transactionRepo).execute();
+    public static Transaction createTransaction(TransactionRepository transactionRepo) {
+        return new CreateTransaction(transactionRepo).execute();
     }
 }

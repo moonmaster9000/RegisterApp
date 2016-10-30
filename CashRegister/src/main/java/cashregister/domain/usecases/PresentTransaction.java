@@ -2,7 +2,6 @@ package cashregister.domain.usecases;
 
 import cashregister.domain.entities.Transaction;
 import cashregister.domain.repositories.interfaces.TransactionRepository;
-import cashregister.domain.usecases.observers.PresentTransactionObserver;
 import cashregister.domain.values.ValidationError;
 
 import java.util.ArrayList;
@@ -12,25 +11,22 @@ import static cashregister.domain.Constraint.EXISTS;
 
 public class PresentTransaction {
     private final String transactionId;
-    private PresentTransactionObserver observer;
     private final TransactionRepository transactionRepo;
 
-    public PresentTransaction(String transactionId, PresentTransactionObserver presentTransactionObserver, TransactionRepository transactionRepo) {
+    public PresentTransaction(String transactionId, TransactionRepository transactionRepo) {
         this.transactionId = transactionId;
-        this.observer = presentTransactionObserver;
         this.transactionRepo = transactionRepo;
     }
 
-    public void execute() {
-        new Execute().invoke();
+    public Transaction execute() {
+        return new Execute().invoke();
     }
 
-    public static void presentTransaction(String transactionId, PresentTransactionObserver presentTransactionObserver, TransactionRepository transactionRepo) {
-        new PresentTransaction(transactionId, presentTransactionObserver, transactionRepo).execute();
+    public static Transaction presentTransaction(String transactionId, TransactionRepository transactionRepo) {
+        return new PresentTransaction(transactionId, transactionRepo).execute();
     }
 
     private class Execute {
-
         private final List<ValidationError> errors;
         private final Transaction transaction;
 
@@ -39,21 +35,17 @@ public class PresentTransaction {
             transaction = transactionRepo.findById(transactionId);
         }
 
-        void invoke() {
+        Transaction invoke() {
             if (transactionNotFound()){
-                sendValidationErrorsToObserver();
+                throw validationErrors();
             } else {
-                sendTransactionToObserver();
+                return transaction;
             }
         }
 
-        private void sendTransactionToObserver() {
-            observer.transactionPresented(transaction);
-        }
-
-        private void sendValidationErrorsToObserver() {
+        private InvalidRequest validationErrors() {
             errors.add(new ValidationError("transactionId", EXISTS));
-            observer.validationFailed(errors);
+            throw new InvalidRequest(errors);
         }
 
         private boolean transactionNotFound() {

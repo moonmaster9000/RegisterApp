@@ -2,28 +2,26 @@ package cashregister.tests.usecases;
 
 import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
-import cashregister.domain.usecases.CreateItem;
 import cashregister.domain.values.ValidationError;
-import cashregister.support.CreateItemObserverSpy;
 import cashregister.support.FakeItemRepository;
 import org.junit.Before;
 import org.junit.Test;
 
 import static cashregister.domain.Constraint.POSITIVE;
 import static cashregister.domain.Constraint.REQUIRED;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static cashregister.domain.usecases.CreateItem.createItem;
+import static cashregister.tests.usecases.UseCaseAssertions.assertThrowsValidationError;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class CreateItemTest {
     @Test
     public void nullDisplayName() {
         item.setDisplayName(null);
 
-        createItem(item, observer, itemRepo);
-
-        assertThat(
-            observer.spyValidationErrors(),
-            hasItem(new ValidationError("displayName", REQUIRED))
+        assertThrowsValidationError(
+            () -> createItem(item, itemRepo),
+            new ValidationError("displayName", REQUIRED)
         );
     }
 
@@ -31,11 +29,9 @@ public class CreateItemTest {
     public void emptyDisplayName() {
         item.setDisplayName("");
 
-        createItem(item, observer, itemRepo);
-
-        assertThat(
-            observer.spyValidationErrors(),
-            hasItem(new ValidationError("displayName", REQUIRED))
+        assertThrowsValidationError(
+            () -> createItem(item, itemRepo),
+            new ValidationError("displayName", REQUIRED)
         );
     }
 
@@ -43,11 +39,9 @@ public class CreateItemTest {
     public void blankDisplayName() {
         item.setDisplayName("    ");
 
-        createItem(item, observer, itemRepo);
-
-        assertThat(
-            observer.spyValidationErrors(),
-            hasItem(new ValidationError("displayName", REQUIRED))
+        assertThrowsValidationError(
+            () -> createItem(item, itemRepo),
+            new ValidationError("displayName", REQUIRED)
         );
     }
 
@@ -55,11 +49,9 @@ public class CreateItemTest {
     public void negativePrice() {
         item.setPriceInCents(-1);
 
-        createItem(item, observer, itemRepo);
-
-        assertThat(
-            observer.spyValidationErrors(),
-            hasItem(new ValidationError("priceInCents", POSITIVE))
+        assertThrowsValidationError(
+            () -> createItem(item, itemRepo),
+            new ValidationError("priceInCents", POSITIVE)
         );
     }
 
@@ -67,43 +59,29 @@ public class CreateItemTest {
     public void emptyBarcode() {
         item.setBarcode(null);
 
-        createItem(item, observer, itemRepo);
-
-        assertThat(
-            observer.spyValidationErrors(),
-            hasItem(new ValidationError("barcode", REQUIRED))
+        assertThrowsValidationError(
+            () -> createItem(item, itemRepo),
+            new ValidationError("barcode", REQUIRED)
         );
     }
 
     @Test
-    public void validAttributes_noValidationErrors() {
-        createItem(item, observer, itemRepo);
-
-        assertNull(observer.spyValidationErrors());
-    }
-
-    @Test
     public void validAttributes_ItemIsCreated() {
-        createItem(item, observer, itemRepo);
+        createItem(item, itemRepo);
 
         assertEquals(1, itemRepo.count());
     }
 
     @Test
     public void validAttributes_SendsIdOfCreatedItemToObserver() {
-        createItem(item, observer, itemRepo);
+        Item createdItem = createItem(item, itemRepo);
 
-        assertNotNull(observer.spyCreatedItemId());
-    }
-
-    private void createItem(Item item, CreateItemObserverSpy observer, ItemRepository itemRepo) {
-        new CreateItem(item, observer, itemRepo).execute();
+        assertNotNull(createdItem.getId());
     }
 
     private String validDisplayName = "valid display name";
     private String validBarcode = "valid barcode";
     private int validPriceInCents = 1;
-    private CreateItemObserverSpy observer = new CreateItemObserverSpy();
     private ItemRepository itemRepo = new FakeItemRepository();
     private Item item = new Item();
 
@@ -114,4 +92,3 @@ public class CreateItemTest {
         item.setPriceInCents(validPriceInCents);
     }
 }
-
