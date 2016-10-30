@@ -2,11 +2,10 @@ package api.stepDefs;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -69,8 +68,7 @@ class ApiClient {
 
     private void extractBodyFromResponse() {
         try {
-            ResponseHandler<String> handler = new BasicResponseHandler();
-            responseBody = handler.handleResponse(response);
+            responseBody = EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
             throw new RuntimeException("Streaming HTTP response body to a string failed unexpectedly", e);
         }
