@@ -27,10 +27,19 @@ class ApiClient {
         responseBody = null;
     }
 
-    void post(String uri, String mimeType) {
-        HttpPost request = new HttpPost("http://localhost:8080" + uri);
-        request.addHeader("content-type", "application/json");
+    void post(String uri, String contentType) {
+        HttpPost request = createBaseJsonRequest(uri, contentType);
 
+        executeRequestAndSaveResponse(request);
+    }
+
+    private HttpPost createBaseJsonRequest(String uri, String contentType) {
+        HttpPost request = new HttpPost("http://localhost:8080" + uri);
+        request.addHeader("content-type", contentType);
+        return request;
+    }
+
+    private void executeRequestAndSaveResponse(HttpPost request) {
         try {
             response = httpClient.execute(request);
         } catch (IOException e) {
@@ -50,6 +59,14 @@ class ApiClient {
         return (Integer)response.getStatusLine().getStatusCode();
     }
 
+    void post(String uri, String contentType, String requestJsonBody) {
+        HttpPost request = createBaseJsonRequest(uri, contentType);
+        StringEntity requestBody = createRequestBody(requestJsonBody);
+
+        request.setEntity(requestBody);
+        executeRequestAndSaveResponse(request);
+    }
+
     private void extractBodyFromResponse() {
         try {
             ResponseHandler<String> handler = new BasicResponseHandler();
@@ -59,17 +76,14 @@ class ApiClient {
         }
     }
 
-    public void post(String url, String contentType, String requestJsonBody) {
+    private StringEntity createRequestBody(String requestJsonBody) {
+        StringEntity requestBody;
+
         try {
-            HttpPost request = new HttpPost("http://localhost:8080" + url);
-            request.addHeader("content-type", contentType);
-            StringEntity requestBody = new StringEntity(requestJsonBody);
-            request.setEntity(requestBody);
-            response = httpClient.execute(request);
+            requestBody = new StringEntity(requestJsonBody);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Encoding request body failed unexpectedly", e);
-        } catch (IOException e) {
-            throw new RuntimeException("http request failed unexpectedly", e);
         }
+        return requestBody;
     }
 }
