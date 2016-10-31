@@ -10,6 +10,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateItemRepoTest extends ItemRepositoryContract {
+    @Override
     protected ItemRepository createRepo() {
         SessionFactory sessionFactory;
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
@@ -17,6 +18,7 @@ public class HibernateItemRepoTest extends ItemRepositoryContract {
         return new HibernateItemRepo(sessionFactory.openSession());
     }
 
+    @Override
     protected Item createEntity() {
         return new Item();
     }

@@ -15,10 +15,12 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 public class HibernateTransactionRepoTest extends TransactionRepositoryContract {
     private Session session;
 
+    @Override
     protected TransactionRepository createRepo() {
         return new HibernateTransactionRepo(getSession());
     }
 
+    @Override
     protected Transaction createEntity() {
         return new Transaction();
     }
