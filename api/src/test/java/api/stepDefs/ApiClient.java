@@ -27,8 +27,8 @@ class ApiClient {
     }
 
     void post(String uri, String contentType) {
+        resetState();
         HttpPost request = createBaseJsonRequest(uri, contentType);
-
         executeRequestAndSaveResponse(request);
     }
 

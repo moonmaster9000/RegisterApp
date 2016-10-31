@@ -1,11 +1,18 @@
 Feature: Create Transaction
 
   Scenario: POST "/transactions"
-    When POST Content-Type:"application/json" url:"/transactions"
+    When POST Content-Type:"application/json" url:"/transactions" body:
+      """
+      {
+        "id": "1"
+      }
+      """
+
     Then 201 response:
-    """
-    {
-      "items": [],
-      "totalInCents": 0
-    }
-    """
+      """
+      {
+        "id": "1",
+        "items": [],
+        "totalInCents": 0
+      }
+      """
