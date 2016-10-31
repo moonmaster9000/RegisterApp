@@ -18,4 +18,11 @@ public class CreateTransactionTest {
 
         assertNotNull(transaction.getId());
     }
+
+    @Test
+    public void itCreatesATransactionEvenIfYouPassInNull() {
+        Transaction transaction = createTransaction(null, transactionRepo);
+
+        assertNotNull(transaction.getId());
+    }
 }
