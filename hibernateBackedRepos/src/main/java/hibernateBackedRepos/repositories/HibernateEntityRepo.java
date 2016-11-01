@@ -1,6 +1,7 @@
 package hibernateBackedRepos.repositories;
 
 import cashregister.domain.entities.Entity;
+import org.hibernate.ReplicationMode;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -22,9 +23,15 @@ class HibernateEntityRepo<T extends Entity> {
         return (List<T>)session.createQuery("from " + entityName).list();
     }
 
-    public void save(T item) {
+    public void save(T entity) {
         session.beginTransaction();
-        session.save(item);
+
+        if (entity.getId() == null){
+            session.save(entity);
+        } else {
+            session.replicate(entity, ReplicationMode.EXCEPTION);
+        }
+
         session.getTransaction().commit();
     }
 

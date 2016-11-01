@@ -36,6 +36,18 @@ public abstract class EntityRepositoryContract<EntityType extends Entity, Reposi
     }
 
     @Test
+    public void itHonorsProvidedIds() {
+        EntityType entity = createEntity();
+        String providedId = "providedId";
+        entity.setId(providedId);
+
+        repo.save(entity);
+
+        assertEquals(providedId, entity.getId());
+        assertEquals(entity, repo.findById(providedId));
+    }
+
+    @Test
     public void whenSavingExistingEntity_ItPreservesId() {
         EntityType entity = createEntity();
 
