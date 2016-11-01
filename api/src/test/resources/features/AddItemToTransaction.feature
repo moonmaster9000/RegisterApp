@@ -4,7 +4,7 @@ Feature: Add Item To Transaction
     Given POST Content-Type:"application/json" url:"/transactions" body:
       """
       {
-        "id": "transactionid"
+        "id": "userprovidedtransactionid"
       }
       """
 
@@ -17,12 +17,12 @@ Feature: Add Item To Transaction
       }
       """
 
-    When POST Content-Type:"application/json" url:"/transactions/transactionid/items/itembarcode"
+    When POST Content-Type:"application/json" url:"/transactions/userprovidedtransactionid/items/itembarcode"
 
     Then 201 response:
       """
       {
-        "id": "transactionid",
+        "id": "userprovidedtransactionid",
         "items": [
           {
             "barcode": "itembarcode"

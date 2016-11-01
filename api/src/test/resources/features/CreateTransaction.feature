@@ -4,14 +4,14 @@ Feature: Create Transaction
     When POST Content-Type:"application/json" url:"/transactions" body:
       """
       {
-        "id": "1"
+        "id": "userprovidedid"
       }
       """
 
     Then 201 response:
       """
       {
-        "id": "1",
+        "id": "userprovidedid",
         "items": [],
         "totalInCents": 0
       }
