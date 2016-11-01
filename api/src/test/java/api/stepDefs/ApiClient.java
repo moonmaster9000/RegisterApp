@@ -1,10 +1,14 @@
 package api.stepDefs;
 
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +22,7 @@ class ApiClient {
     private String responseBody;
 
     ApiClient(){
-        httpClient = HttpClientBuilder.create().build();
+        httpClient = httpClientWithLargeConnectionPool();
     }
 
     void resetState(){
@@ -28,22 +32,15 @@ class ApiClient {
 
     void post(String uri, String contentType) {
         resetState();
-        HttpPost request = createBaseJsonRequest(uri, contentType);
+        HttpPost request = createBaseRequest(uri, contentType);
         executeRequestAndSaveResponse(request);
     }
 
-    private HttpPost createBaseJsonRequest(String uri, String contentType) {
-        HttpPost request = new HttpPost("http://localhost:8080" + uri);
-        request.addHeader("content-type", contentType);
-        return request;
-    }
-
-    private void executeRequestAndSaveResponse(HttpPost request) {
-        try {
-            response = httpClient.execute(request);
-        } catch (IOException e) {
-            throw new RuntimeException("http request failed unexpectedly", e);
-        }
+    void post(String uri, String contentType, String requestJsonBody) {
+        resetState();
+        HttpPost request = createBaseRequest(uri, contentType);
+        request.setEntity(createRequestBody(requestJsonBody));
+        executeRequestAndSaveResponse(request);
     }
 
     String getResponseBody() {
@@ -58,12 +55,12 @@ class ApiClient {
         return (Integer)response.getStatusLine().getStatusCode();
     }
 
-    void post(String uri, String contentType, String requestJsonBody) {
-        HttpPost request = createBaseJsonRequest(uri, contentType);
-        StringEntity requestBody = createRequestBody(requestJsonBody);
-
-        request.setEntity(requestBody);
-        executeRequestAndSaveResponse(request);
+    private void executeRequestAndSaveResponse(HttpPost request) {
+        try {
+            response = httpClient.execute(request);
+        } catch (IOException e) {
+            throw new RuntimeException("http request failed unexpectedly", e);
+        }
     }
 
     private void extractBodyFromResponse() {
@@ -83,5 +80,20 @@ class ApiClient {
             throw new RuntimeException("Encoding request body failed unexpectedly", e);
         }
         return requestBody;
+    }
+
+    private CloseableHttpClient httpClientWithLargeConnectionPool() {
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        cm.setMaxTotal(200);
+        cm.setDefaultMaxPerRoute(20);
+        HttpHost localhost = new HttpHost("locahost", 8080);
+        cm.setMaxPerRoute(new HttpRoute(localhost), 50);
+        return HttpClientBuilder.create().setConnectionManager(cm).build();
+    }
+
+    private HttpPost createBaseRequest(String uri, String contentType) {
+        HttpPost request = new HttpPost("http://localhost:8080" + uri);
+        request.addHeader("content-type", contentType);
+        return request;
     }
 }
