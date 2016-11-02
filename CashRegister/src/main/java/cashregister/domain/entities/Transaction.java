@@ -15,7 +15,6 @@ public class Transaction extends Entity {
     }
 
     public void setItems(List<Item> items) {
-        System.out.println("items is being set!" + items.toString());
         this.items = items;
     }
 
