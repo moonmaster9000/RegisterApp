@@ -3,6 +3,7 @@ package api.stepDefs;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.entity.StringEntity;
@@ -40,6 +41,12 @@ class ApiClient {
         resetState();
         HttpPost request = createBaseRequest(uri, contentType);
         request.setEntity(createRequestBody(requestJsonBody));
+        executeRequestAndSaveResponse(request);
+    }
+
+    void get(String uri) {
+        resetState();
+        HttpGet request = new HttpGet(url(uri));
         executeRequestAndSaveResponse(request);
     }
 
@@ -92,8 +99,20 @@ class ApiClient {
     }
 
     private HttpPost createBaseRequest(String uri, String contentType) {
-        HttpPost request = new HttpPost("http://localhost:8080" + uri);
+        HttpPost request = new HttpPost(url(uri));
         request.addHeader("content-type", contentType);
         return request;
+    }
+
+    private String url(String uri) {
+        return "http://localhost:8080" + uri;
+    }
+
+    private void executeRequestAndSaveResponse(HttpGet request) {
+        try {
+            response = httpClient.execute(request);
+        } catch (IOException e) {
+            throw new RuntimeException("http request failed unexpectedly", e);
+        }
     }
 }
