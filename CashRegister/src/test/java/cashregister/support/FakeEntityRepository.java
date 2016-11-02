@@ -22,6 +22,11 @@ public class FakeEntityRepository<T extends Entity> implements EntityRepository<
     }
 
     @Override
+    public void deleteAll() {
+        entities = new ArrayList<>();
+    }
+
+    @Override
     public void save(T entity) {
         if (entity.getId() == null)
             entity.setId(UUID.randomUUID().toString());

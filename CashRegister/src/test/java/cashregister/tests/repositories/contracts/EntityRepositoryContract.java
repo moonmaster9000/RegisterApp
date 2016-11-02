@@ -84,4 +84,12 @@ public abstract class EntityRepositoryContract<EntityType extends Entity, Reposi
         repo.save(entity);
         assertEquals(1, repo.count());
     }
+
+    @Test
+    public void itDeletesAllEntities() {
+        EntityType entity = createEntity();
+        repo.save(entity);
+        repo.deleteAll();
+        assertEquals(0, repo.count());
+    }
 }

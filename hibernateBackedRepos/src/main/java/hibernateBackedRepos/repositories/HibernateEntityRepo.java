@@ -35,6 +35,12 @@ class HibernateEntityRepo<T extends Entity> {
         session.getTransaction().commit();
     }
 
+    public void deleteAll(){
+        session.beginTransaction();
+        session.createQuery("delete from " + entityName).executeUpdate();
+        session.getTransaction().commit();
+    }
+
     public T findById(String id) {
         return findBy("id", id);
     }

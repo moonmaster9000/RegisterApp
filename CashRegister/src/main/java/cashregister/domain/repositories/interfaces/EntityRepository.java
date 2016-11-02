@@ -12,4 +12,6 @@ public interface EntityRepository<T extends Entity> {
     int count();
 
     T findById(String id);
+
+    void deleteAll();
 }
