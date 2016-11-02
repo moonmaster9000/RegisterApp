@@ -1,6 +1,6 @@
 package api.controllers;
 
-import cashregister.domain.usecases.InvalidRequest;
+import cashregister.domain.usecases.exceptions.InvalidRequest;
 import cashregister.domain.values.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

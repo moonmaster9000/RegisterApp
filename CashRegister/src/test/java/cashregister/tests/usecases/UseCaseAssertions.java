@@ -1,6 +1,6 @@
 package cashregister.tests.usecases;
 
-import cashregister.domain.usecases.InvalidRequest;
+import cashregister.domain.usecases.exceptions.InvalidRequest;
 import cashregister.domain.values.ValidationError;
 
 import static org.hamcrest.CoreMatchers.hasItem;

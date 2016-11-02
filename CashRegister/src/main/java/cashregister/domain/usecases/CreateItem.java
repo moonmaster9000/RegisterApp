@@ -2,6 +2,7 @@ package cashregister.domain.usecases;
 
 import cashregister.domain.entities.Item;
 import cashregister.domain.repositories.interfaces.ItemRepository;
+import cashregister.domain.usecases.exceptions.InvalidRequest;
 
 public class CreateItem {
     private final Item item;

@@ -2,6 +2,7 @@ package cashregister.domain.usecases;
 
 import cashregister.domain.entities.Transaction;
 import cashregister.domain.repositories.interfaces.TransactionRepository;
+import cashregister.domain.usecases.exceptions.InvalidRequest;
 import cashregister.domain.values.ValidationError;
 
 import java.util.ArrayList;

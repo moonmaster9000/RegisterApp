@@ -1,4 +1,4 @@
-package cashregister.domain.usecases;
+package cashregister.domain.usecases.exceptions;
 
 import cashregister.domain.values.ValidationError;
 
