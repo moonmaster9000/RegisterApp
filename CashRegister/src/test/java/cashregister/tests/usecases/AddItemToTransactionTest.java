@@ -1,4 +1,4 @@
-package cashregister.domain.usecases;
+package cashregister.tests.usecases;
 
 import cashregister.domain.entities.Item;
 import cashregister.domain.entities.Transaction;
